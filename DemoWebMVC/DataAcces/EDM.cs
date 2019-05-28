@@ -38,5 +38,9 @@ namespace DemoWebMVC.Models
                 .Property(e => e.Prix)
                 .HasPrecision(19, 4);
         }
+
+        public System.Data.Entity.DbSet<DemoWebMVC.Models.Detail> Details { get; set; }
+
+        public System.Data.Entity.DbSet<DemoWebMVC.Models.Commande> Commandes { get; set; }
     }
 }

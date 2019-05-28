@@ -11,32 +11,70 @@ namespace DemoWebMVC.Controllers
     public class PanierController : Controller
     {
         IRepository<Produit> rep = new EFRepository<Produit>();
-        // GET: Panier
+        
         Commande Panier;
-        public ActionResult AjouterAuPanier(int IdProduit)
+        public ActionResult AjouterAuPanier(int id)
         {
             if (Session["panier"]==null)
             {
                 Panier = new Commande() { Date = DateTime.Today, IdClient = 1 };
                 Panier.Details = new List<Detail>();
-                Panier.Details.Add(new Detail { IdProduit = IdProduit, Quantite = 1 });
+                Panier.Details.Add(new Detail { IdProduit = id, Produit = rep.Trouver(id), Quantite = 1 });
                 Session["panier"] = Panier;
             }
             else
             {
                 Panier = (Commande)Session["panier"];
-                if (Panier.Details.Where(d=>d.IdProduit==IdProduit).Count()>0)
+                if (Panier.Details.Where(d=>d.IdProduit==id).Count()>0)
                 {
-                    Panier.Details.Where(d => d.IdProduit == IdProduit).First().Quantite++;
+                    Panier.Details.Where(d => d.IdProduit == id).First().Quantite++;
                 }
                 else
                 {
-                    Panier.Details.Add(new Detail { IdProduit = IdProduit, Quantite = 1 });
+                    Panier.Details.Add(new Detail { IdProduit = id, Produit=rep.Trouver(id),Quantite = 1 });
+
                 }
                 Session["panier"] = Panier;
             }
             
-            return View();
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult CommanderPanier()
+        {
+            //Initialiser un Rep commande
+            Commande Panier = (Commande)Session["panier"];
+            IRepository<Commande> repCommande = new EFRepository<Commande>();
+            //ajouter panier dans les commandes
+            repCommande.Ajouter(Panier);
+            //panier a vider
+            Session["panier"]=null;
+
+            return RedirectToAction("Index","Produit");
+        }
+
+        public PartialViewResult Incrementer(int IdProduit)
+        {
+            Panier = (Commande)Session["panier"];
+            Detail detail = Panier.Details.Where(d => d.IdProduit == IdProduit).First();
+            detail.Quantite++;
+            Session["panier"] = Panier;
+            return PartialView("_ligne", detail);
+        }
+
+        // GET: Panier
+        public ActionResult Index()
+        {
+            if (Session["panier"] != null)
+            {
+                return View(((Commande)Session["panier"]).Details);
+            }
+            else
+            {
+                return View(new List<Detail>());
+            }
+
+            
         }
 
         // GET: Panier/Details/5

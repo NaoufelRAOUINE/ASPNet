@@ -4,13 +4,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace DemoWebMVC.DataAcces
 {
     public class EFRepository<T> : IRepository<T> where T:class
     {
-        EDM contexte = new EDM();
+        EDM contexte;// = new EDM();
 
+        public EFRepository()
+        {
+            if (HttpContext.Current.Session["contexte"]==null)
+            {
+                contexte = new EDM();
+                HttpContext.Current.Session["contexte"] = contexte;
+            }
+            else
+            {
+                contexte = (EDM)HttpContext.Current.Session["contexte"];
+            }
+        }
         public T Ajouter(T nouveau)
         {
             try

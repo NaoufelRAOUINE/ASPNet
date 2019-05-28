@@ -1,0 +1,26 @@
+﻿@model DemoWebMVC.Models.Detail
+
+    <td>
+        @Html.DisplayFor(modelItem => Model.Produit.Id)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => Model.Produit.Modele)
+    </td>
+    <td></td>
+    <td>
+        @Html.DisplayFor(modelItem => Model.Quantite)
+    </td>
+    <td>
+        @Ajax.ActionLink("+", "Incrementer", new {IdProduit=Model.IdProduit},
+     new AjaxOptions {HttpMethod="POST"
+     ,UpdateTargetId= ("tr"+Model.Produit.Id)
+     ,InsertionMode=InsertionMode.Replace
+     })
+    </td>
+<td>@(Model.Produit.Prix * Model.Quantite)</td>
+<td>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Details", "Details", new { id = Model.Id }) |
+    @Html.ActionLink("Delete", "Delete", new { id = Model.Id })
+</td>
+

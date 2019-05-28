@@ -1,0 +1,55 @@
+﻿@model IEnumerable<DemoWebMVC.Models.Detail>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Passer commande", "CommanderPanier")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.IdProduit)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Produit.Modele)
+        </th>
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.Quantite)
+        </th>
+        <th></th>
+        <th>Montant</th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr id=@("tr"+item.IdProduit)>
+        <td>
+            @Html.DisplayFor(modelItem => item.IdProduit)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Produit.Modele)
+        </td>
+        <td></td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Quantite)
+        </td>
+        <td>@Ajax.ActionLink("+", "Incrementer", new {IdProduit=item.IdProduit},
+             new AjaxOptions {HttpMethod="POST"
+             ,UpdateTargetId= ("tr"+item.IdProduit)
+             ,InsertionMode=InsertionMode.Replace
+             })</td>
+        <td>@(item.Produit.Prix*item.Quantite)</td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+        </td>
+    </tr>
+}
+
+</table>
