@@ -23,5 +23,7 @@ namespace DemoWebMVC.Models
         public int? idCategorie { get; set; }
 
         public virtual Categorie Categorie { get; set; }
+
+        public virtual ICollection<Detail> Details { get; set; }
     }
 }
